@@ -17,7 +17,7 @@ with open('drone_coords.SRT', 'r') as file:
 
 def calculate_displacement_vector(index):
     if index == 0:
-        return (0, 0)
+        return (0.0, 0.0)
     else:
         long_curr = drone_coords[index][0]
         long_prev = drone_coords[index - 1][0]
