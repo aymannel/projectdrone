@@ -16,8 +16,8 @@ with open('drone_coords.SRT', 'r') as file:
     drone_coords = [extract_coords(r) for r in raw_coords]
 
 with open('drone_coords.csv', 'w', newline='') as file:
-    columns = [['frame_num', 'drone_latitude', 'drone_longitude', 'is_reference']]
-    data = [[frame + 1, *coords, frame + 1 in reference_frames] for frame, coords in enumerate(drone_coords)]
+    columns = [['frame_num', 'drone_latitude', 'drone_longitude', 'displacement_from_origin', 'displacement_from_previous', 'is_reference']]
+    data = [[frame + 1, *coords, None, None, frame + 1 in reference_frames] for frame, coords in enumerate(drone_coords)]
     writer = csv.writer(file)
     writer.writerows(columns + data)
 
