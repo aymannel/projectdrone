@@ -15,42 +15,38 @@ with open('drone_coords.SRT', 'r') as file:
     raw_coords = [c for c in drone_coords_file.split('\n\n') if c]
     drone_coords = [extract_coords(r) for r in raw_coords]
 
+def calculate_displacement_vector(index):
+    if index == 0:
+        return (0, 0)
+    else:
+        long_curr = drone_coords[index][0]
+        long_prev = drone_coords[index - 1][0]
+        lat_curr = drone_coords[index][1]
+        lat_prev = drone_coords[index - 1][1]
+        return ((long_curr - long_prev), (lat_curr - lat_prev))
+
 with open('drone_coords.csv', 'w', newline='') as file:
     columns = [[
-        'frame_num',
-        'drone_latitude',
-        'drone_longitude',
-        'displacement_origin',
+        'frame_number',
+        'latitude',
+        'longitude',
         'displacement_previous',
-        'drone_latitude_pixels',
-        'drone_longitude_pixels',
-        'displacement_origin_pixels',
+        'latitude_pixels',
+        'longitude_pixels',
         'displacement_previous_pixels',
         'is_reference'
         ]]
-    data = [[frame + 1, *coords, None, None, None, None, None, None, frame + 1 in reference_frames] for frame, coords in enumerate(drone_coords)]
+
+    data = [[index + 1,
+            coords[0],
+            coords[1],
+            calculate_displacement_vector(index),
+            None,
+            None,
+            None,
+            index + 1 in reference_frames]
+            for index, coords in enumerate(drone_coords)]
+
     writer = csv.writer(file)
     writer.writerows(columns + data)
-
-# def get_displacement_vectors(input_coords, start, end):
-#     displacements = []
-#     for idx in range(len(reference_coords)):
-#         if idx == 0:
-#             displacements.append([0, 0])
-#         else:
-#             long_curr = reference_coords[idx][1]
-#             long_prev = reference_coords[idx - 1][1]
-#             lat_curr = reference_coords[idx][2]
-#             lat_prev = reference_coords[idx - 1][2]
-#             displacement = ((long_curr - long_prev), (lat_curr - lat_prev))
-#             displacements.append(displacement)
-
-
-# print('\n'.join([str(u) for u in reference_coords]))
-# print('\n'.join([str(d) for d in displacements]))
-
-# data = [['frame_num', 'drone_latitude', 'drone_longitude', 'displacement_from_origin', 'displacement_from_previous']]
-# with open('drone_coords.csv', 'w', newline='') as file:
-#     writer = csv.writer(file)
-#     writer.writerows(data)
 
